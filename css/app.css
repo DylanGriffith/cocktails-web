@@ -1,0 +1,18 @@
+.ingredient, .cocktail .heading {
+  font-size: 2rem;
+  font-weight: bold;
+}
+.ingredient, .cocktail img {
+  margin-right: 1rem;
+}
+
+#cocktail-suggestions .suggest-arrow {
+  font-size: 3rem;
+  text-align: center;
+}
+
+#cocktail-suggestions .suggest-text {
+  font-weight: bold;
+  font-size: 2rem;
+  text-align: center;
+}

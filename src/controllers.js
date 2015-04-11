@@ -1,8 +1,8 @@
-var cocktails = angular.module('cocktails', []);
+var cocktails = angular.module('cocktails');
 
-cocktails.controller('IngredientsController', function($scope, $http) {
+cocktails.controller('IngredientsController', function($scope, $http, SelectedIngredients) {
   $http.get("/api/ingredients").success(function(data) {
-      $scope.selected = [];
+      $scope.selected = SelectedIngredients;
       $scope.ingredients = data.data;
     }).error(function() {
       alert("Something went wrong");
@@ -27,5 +27,50 @@ cocktails.controller('IngredientsController', function($scope, $http) {
 
   $scope.select = function(ingredientId) {
     $scope.selected.push(ingredientId);
+  }
+});
+
+cocktails.controller('CocktailsController', function($scope, $http, SelectedIngredients) {
+  $scope.cocktails = [];
+  $scope.suggestClicked = function() {
+    var thing = {
+      url: "/api/cocktails",
+      method: "GET",
+      params: {"ingredient_ids[]": SelectedIngredients}
+    };
+    $http(thing).success(function(data) {
+      $scope.expanded = [];
+      $scope.cocktails = data.data;
+    }).error(function() {
+      alert("Something went wrong");
+    });
+  }
+
+  $scope.ingredientsString = function(cocktail) {
+    var names = _.map(cocktail.ingredients, function(ingredient) {
+      return ingredient.name;
+    });
+    return names.join(", ");
+  }
+
+  $scope.clickedCocktail = function(cocktailId) {
+    if($scope.isExpanded(cocktailId)) {
+      $scope.unExpand(cocktailId);
+    }else {
+      $scope.expand(cocktailId);
+    }
+  }
+
+  $scope.isExpanded = function(cocktailId) {
+    return $scope.expanded.indexOf(cocktailId) != -1;
+  }
+
+  $scope.unExpand = function(cocktailId) {
+    var index = $scope.expanded.indexOf(cocktailId);
+    $scope.expanded.splice(index, 1);
+  }
+
+  $scope.expand = function(cocktailId) {
+    $scope.expanded.push(cocktailId);
   }
 });
